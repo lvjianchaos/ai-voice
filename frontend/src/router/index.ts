@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import AppLayout from '@/components/layout/AppLayout.vue'
-import HomeLayout from '@/components/layout2/HomeLayout.vue'
+import AppLayout from '@/components/layout/AppLayout.vue'
+import MainLayout from '@/components/layout2/MainLayout.vue'
+import indexView from '@/views/indexView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +9,24 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeLayout,
+      component: AppLayout,
+    },
+    {
+      path: '/:xxx(.*)*',
+      name: 'ErrorPage',
+      component: () => import('../views/ErrorPage.vue'),
+    },
+    {
+      path: '/main',
+      name: 'main',
+      component: MainLayout,
+      children: [
+        {
+          path: '',
+          name: 'index',
+          component: indexView,
+        },
+      ],
     },
     {
       path: '/about',

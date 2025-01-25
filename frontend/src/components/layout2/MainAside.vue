@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const isCollapse = ref(false)
+import { isCollapse } from './isCollapse';
 </script>
 
 <template>
@@ -59,7 +59,7 @@ const isCollapse = ref(false)
 
   /* 侧边栏样式 */
   .el-aside {
-    background-color: #eee;
+    background-color: rgb(232.8, 233.4, 234.6);
     height: 100vh;
     width:auto;
     text-align: center;
@@ -67,7 +67,7 @@ const isCollapse = ref(false)
   }
   /* 菜单样式 */
   .el-menu {
-    background-color: #eee;
+    background-color: rgb(232.8, 233.4, 234.6);
     width: 200px;
     border-right: none;
     /* 菜单折叠 */
