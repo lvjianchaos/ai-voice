@@ -47,6 +47,7 @@ import { isCollapse } from './isCollapse';
   align-items: center;
   background-color: rgb(221.7, 222.6, 224.4);
   .el-icon {
+    font-size: 20px;
     margin-right:17px;
   }
 }
