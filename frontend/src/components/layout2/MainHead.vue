@@ -45,7 +45,7 @@ import { isCollapse } from './isCollapse';
 .el-header {
   display: flex;
   align-items: center;
-  background-color: rgb(221.7, 222.6, 224.4);
+  background-color: rgb(209.4, 236.7, 195.9);
   .el-icon {
     font-size: 20px;
     margin-right:17px;

@@ -26,6 +26,6 @@ import MainHead from './MainHead.vue';
 }
 .el-main {
   padding-right: 0;
-  background-color: rgb(243.9, 244.2, 244.8)
+  background-color: rgb(239.8, 248.9, 235.3)
 }
 </style>

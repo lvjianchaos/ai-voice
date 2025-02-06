@@ -49,7 +49,7 @@ import { isCollapse } from './isCollapse';
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    color: black;
+    color: #303133;
     height: 60px;
     img {
       width: 32px;
@@ -59,7 +59,8 @@ import { isCollapse } from './isCollapse';
 
   /* 侧边栏样式 */
   .el-aside {
-    background-color: rgb(232.8, 233.4, 234.6);
+    color: #303133;
+    background-color: rgb(224.6, 242.8, 215.6);
     height: 100vh;
     width:auto;
     text-align: center;
@@ -67,7 +68,7 @@ import { isCollapse } from './isCollapse';
   }
   /* 菜单样式 */
   .el-menu {
-    background-color: rgb(232.8, 233.4, 234.6);
+    background-color: rgb(224.6, 242.8, 215.6);
     width: 200px;
     border-right: none;
     /* 菜单折叠 */

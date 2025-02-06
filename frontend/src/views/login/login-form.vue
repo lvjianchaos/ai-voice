@@ -16,26 +16,36 @@ withDefaults(
     labelWidth: 'auto',
     btnText: "登录",
   }
+
 )
 </script>
 
 <template>
-  <div class="login-form box-bg box-shadow">
-    <h1 class="login-form__title">
-      {{ title }}
-    </h1>
-    <div class="login-form__form">
-      <el-form :label-width="labelWidth" label-position="left">
-        <slot></slot>
-        <el-form-item>
-          <n-button type="primary" block round attr-type="submit">{{ btnText }}</n-button>
-        </el-form-item>
-      </el-form>
+  <div class="login-form-wrapper">
+    <div class="login-form box-bg box-shadow">
+      <h1 class="login-form__title">
+        {{ title }}
+      </h1>
+      <div class="login-form__form">
+        <el-form :label-width="labelWidth" label-position="left">
+          <slot></slot>
+          <el-form-item class="login-form__item">
+            <el-button type="success" round>{{ btnText }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.login-form-wrapper {
+  display: flex;
+  justify-content: center; /* 横向居中 */
+  align-items: center; /* 纵向居中 */
+  height: 100vh; /* 使父容器占满整个视口 */
+}
+
 .login-form {
   width: 95%;
   max-width: 425px;
@@ -58,5 +68,11 @@ withDefaults(
     font-weight: bold;
     line-height: 1.5;
   }
+
+  .login-form__item {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>
+

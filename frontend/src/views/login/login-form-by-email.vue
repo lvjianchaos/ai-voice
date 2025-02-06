@@ -11,6 +11,9 @@ import LoginForm from "./login-form.vue"
       <el-form-item label="密码">
         <el-input placeholder="请输入密码" clearable/>
       </el-form-item>
+      <el-form-item label="重新输入密码">
+        <el-input placeholder="请重新输入密码" clearable/>
+      </el-form-item>
     </LoginForm>
   </div>
 </template>
