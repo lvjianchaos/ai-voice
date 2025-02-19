@@ -1,56 +1,129 @@
-<script setup lang="ts">
-import {StLoginPage1} from 'st-common-ui-vue3' // StLoginPage1 登录页面组件
-import LoginFormByPwd from "./login-form-by-pwd.vue" // 用户名密码登录表单
-import LoginFormByEmail from "./login-form-by-email.vue" // 邮箱登录表单
-import LoginFormToggle from "./login-form-toggle.vue" // 登录表单切换组件
-import {ref} from 'vue'
 
-// 是否切换表单
-const isToggleForm = ref(false)
-/**
- * 切换表单
- */
-const toggleForm = () => isToggleForm.value = !isToggleForm.value
+<script lang="ts" setup>
+import type { FormInstance, FormRules } from 'element-plus';
+import { login } from "@/api/users.ts";
+import { useTokenStore } from "@/stores/mytoken.ts";
+import { useRouter, useRoute } from 'vue-router';
+
+const store = useTokenStore();
+const router = useRouter();
+const route = useRoute();
+// 表单响应式数据
+const form = reactive({
+  name: "Chaos",
+  password: "123456",
+});
+// 登录事件处理
+const onSubmit = async () => {
+  isLoading.value = true;
+  // 表单校验
+  await formRef.value?.validate().catch((err)=>{
+    ElMessage.error("表单校验失败...");
+    isLoading.value = false;
+    throw err;
+  });
+
+  // 登录请求
+  const data = await login(form).then((res) => {
+    if(!res.data.success) {
+      ElMessage.error('登录失败！');
+      isLoading.value = false;
+      throw new Error("登录信息有误");
+    }
+    return res.data;
+  });
+  console.log(data);
+
+  // 保存token信息
+  store.saveToken(data.content);
+
+  isLoading.value = false;
+
+  ElMessage.success('登录成功！');
+  router.push(route.query.redirect as string || '/main');
+};
+// 定义表单校验规则
+const rules = reactive<FormRules>({
+  name: [
+    {
+      required: true,
+      message: "用户名不能为空",
+      trigger: ['change']
+    },
+    {
+      min: 3,
+      max: 10,
+      message: "长度需为3-10位",
+      trigger: ['blur']
+    },
+    {
+      pattern: /^[a-zA-Z0-9_]+$/,
+      message: "只允许字母、数字和下划线",
+      trigger: ['blur']
+    },
+  ],
+  password: [
+    {
+      required: true,
+      message: "密码不能为空",
+      trigger: "change" },
+    {
+      min: 6,
+      max: 18,
+      message: "长度需为6-18位",
+      trigger: ['blur']
+    },
+  ]
+});
+// 定义是否登录加载中
+const isLoading = ref(false);
+// 表单实例
+const formRef = ref<FormInstance>();
 </script>
 
 <template>
-  <div class="login-page">
-    <!-- 登录页面1组件 -->
-    <st-login-page1
-      v-model="isToggleForm"
-      circle-mask-color="#18A058"
-      :panel-img-src="['','']"
-    >
-      <!-- 面板1顶部 -->
-      <template #panel-1-top>
-        <LoginFormToggle
-          title="前往注册"
-          sub-title="如果您没有账号，那么请您前往注册！"
-          toggle-btn-text="前往用户注册"
-          :toggle-handler="toggleForm"
-        />
-      </template>
-      <!-- 表单1 -->
-      <template #form-1>
-        <LoginFormByPwd/>
-      </template>
-      <!-- 面板2顶部 -->
-      <template #panel-2-top>
-        <LoginFormToggle
-          title="前往登录"
-          sub-title="如果您已有账号，请您前往登录！"
-          toggle-btn-text="前往登录"
-          :toggle-handler="toggleForm"
-        />
-      </template>
-      <!-- 表单2 -->
-      <template #form-2>
-        <LoginFormByEmail/>
-      </template>
-    </st-login-page1>
+  <div class="login">
+    <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" label-position="top" size="large">
+      <h2>登录</h2>
+
+      <el-form-item label="用户名" prop="name">
+        <el-input v-model="form.name" />
+      </el-form-item>
+
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" type="password" />
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit" :loading="isLoading">登录</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.login {
+  background-color: #ccc;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  .el-form {
+    width:300px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+
+    .el-form-item {
+      margin-top: 20px;
+    }
+
+    .el-button {
+      width:100%;
+      margin-top:30px;
+    }
+  }
+}
 </style>
+

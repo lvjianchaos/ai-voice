@@ -15,26 +15,26 @@ import { isCollapse } from './isCollapse';
               <el-icon> <IEpTools /> </el-icon> <span> 声音管理 </span>
             </template>
             <el-menu-item index="/sample-library">
-              <el-icon> <IEpTools /> </el-icon> <span> 声音样本库 </span>
+              <el-icon> <IEpShop /> </el-icon> <span> 声音样本库 </span>
             </el-menu-item>
             <el-menu-item index="voice-guide">
-              <el-icon> <IEpTools /> </el-icon> <span> 个性化语音讲解 </span>
+              <el-icon> <IEpPhoneFilled /> </el-icon> <span> 个性语音讲解 </span>
             </el-menu-item>
             <el-menu-item index="/standard-output">
-              <el-icon> <IEpTools /> </el-icon> <span> 标准语言输出 </span>
+              <el-icon> <IEpComment /> </el-icon> <span> 标准语言输出 </span>
             </el-menu-item>
           </el-sub-menu>
 
           <el-menu-item index="/courseware">
-            <el-icon> <IEpTools /> </el-icon> <span> 课件制作 </span>
+            <el-icon> <IEpList /> </el-icon> <span> 课件制作 </span>
           </el-menu-item>
 
           <el-sub-menu index="2">
             <template #title>
-              <el-icon> <IEpTools /> </el-icon> <span> 音视频处理 </span>
+              <el-icon> <IEpVideoCameraFilled /> </el-icon> <span> 音视频处理 </span>
             </template>
             <el-menu-item index="/audio-subtitles">
-              <el-icon> <IEpTools /> </el-icon> <span> 声音置换及加字幕 </span>
+              <el-icon> <IEpPlatform /> </el-icon> <span> 声音置换与字幕添加 </span>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -60,7 +60,7 @@ import { isCollapse } from './isCollapse';
   /* 侧边栏样式 */
   .el-aside {
     color: #303133;
-    background-color: rgb(224.6, 242.8, 215.6);
+    background-color: rgb(232.8, 233.4, 234.6);
     height: 100vh;
     width:auto;
     text-align: center;
@@ -68,8 +68,7 @@ import { isCollapse } from './isCollapse';
   }
   /* 菜单样式 */
   .el-menu {
-    background-color: rgb(224.6, 242.8, 215.6);
-    width: 200px;
+    background-color: rgb(232.8, 233.4, 234.6);
     border-right: none;
     /* 菜单折叠 */
     &.el-menu--collapse {

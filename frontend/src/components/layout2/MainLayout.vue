@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import MainAside from './MainAside.vue';
-import MainHead from './MainHead.vue';
+import MainHeader from './MainHeader.vue';
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import MainHead from './MainHead.vue';
     <el-container>
       <MainAside />
       <el-container class = "header-and-main">
-        <MainHead />
+        <MainHeader />
         <el-main>
           <el-scrollbar>
             <RouterView />
@@ -26,6 +26,6 @@ import MainHead from './MainHead.vue';
 }
 .el-main {
   padding-right: 0;
-  background-color: rgb(239.8, 248.9, 235.3)
+  background-color: rgb(243.9, 244.2, 244.8);
 }
 </style>

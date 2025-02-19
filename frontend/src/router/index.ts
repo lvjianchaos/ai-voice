@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import MainLayout from '@/components/layout2/MainLayout.vue'
 import indexView from '@/views/indexView.vue'
+import { useTokenStore } from '@/stores/mytoken'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,7 @@ const router = createRouter({
       path: '/main',
       name: 'main',
       component: MainLayout,
+      // meta: { requireAuth: true },
       children: [
         {
           path: '',
@@ -42,6 +44,18 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((r) => r.meta?.requireAuth)) {
+    const store = useTokenStore()
+    if (!store.token?.access_token) {
+      next({ name: 'login', query: { redirect: to.fullPath } })
+      return
+    }
+  }
+
+  next()
 })
 
 export default router
