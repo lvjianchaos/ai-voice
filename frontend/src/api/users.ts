@@ -70,3 +70,22 @@ export const refreshToken = () => {
   })
   return promiseRT
 }
+
+// 用户注册
+type RegisterInfo = {
+  name: string
+  password: string
+  passwordConfirm: string
+  code?: string
+}
+
+type RegisterResult = CommonReturn
+
+// 用户注册请求
+export const register = (registerInfo: RegisterInfo) => {
+  return request<RegisterResult>({
+    method: 'POST',
+    url: '/front/user/register',
+    data: registerInfo,
+  })
+}
