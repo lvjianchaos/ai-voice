@@ -103,18 +103,20 @@ const formRef = ref<FormInstance>();
 
 <style scoped lang="scss">
 .login {
-  border-radius: 10px;
-  background-color: rgb(221.7, 222.6, 224.4);
-  height: 100vh;
+  border-radius: 20px;
+  background-color: #ffffff;
+  height: 85vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   .el-form {
     width:300px;
     background-color: rgb(243.9, 244.2, 244.8);
     padding: 30px;
     border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
     .el-form-item {
       margin-top: 20px;

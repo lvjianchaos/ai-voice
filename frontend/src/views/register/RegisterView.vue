@@ -120,18 +120,20 @@ const formRef = ref<FormInstance>();
 
 <style scoped lang="scss">
 .register {
-  background-color: #ccc;
-  border-radius: 10px;
-  height: 100vh;
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 85vh;
   display: flex;
   justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   align-items: center;
 
   .el-form {
     width:300px;
-    background-color: #fff;
+    background-color: rgb(243.9, 244.2, 244.8);
     padding: 30px;
     border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
     .el-form-item {
       margin-top: 20px;

@@ -36,7 +36,8 @@ const handleSelect = (key: string) => {
 
 <style lang="scss" scoped>
 .el-header {
-  background-color: rgb(221.7, 222.6, 224.4);
+  border-radius: 10px;
+  background-color: rgb(199.5, 201, 204);
   padding: 0 20px;
   display: flex;
   justify-content: space-between;

@@ -15,10 +15,11 @@ import AppHeader from './AppHeader.vue';
 
 <style lang="scss" scoped>
 .common-layout {
-  background-color: rgb(243.9, 244.2, 244.8);
+  background-color: rgb(232.8, 233.4, 234.6);
 }
 .header-and-main {
   height: 100vh;
   flex-direction: column;
 }
+
 </style>
