@@ -61,6 +61,7 @@ import { isCollapse } from './isCollapse';
   .el-aside {
     color: #303133;
     background-color: rgb(232.8, 233.4, 234.6);
+    border-radius: 10px;
     height: 100vh;
     width:auto;
     text-align: center;

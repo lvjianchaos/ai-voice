@@ -42,6 +42,7 @@ const handleSelect = (key: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
   .logo {
     display: flex;

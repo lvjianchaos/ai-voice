@@ -73,7 +73,9 @@ const handleLogout = async () => {
 
 <style lang="scss" scoped>
 .el-header {
+  border-radius: 5px;
   display: flex;
+
   align-items: center;
   background-color: rgb(221.7, 222.6, 224.4);
   .el-icon {
