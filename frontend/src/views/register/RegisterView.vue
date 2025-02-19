@@ -121,6 +121,7 @@ const formRef = ref<FormInstance>();
 <style scoped lang="scss">
 .register {
   background-color: #ccc;
+  border-radius: 10px;
   height: 100vh;
   display: flex;
   justify-content: center;

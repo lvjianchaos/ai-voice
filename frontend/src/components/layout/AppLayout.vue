@@ -3,14 +3,22 @@ import AppHeader from './AppHeader.vue';
 </script>
 
 <template>
-    <div class="common-layout">
-    <el-container>
+  <div class="common-layout">
+    <el-container class = "header-and-main">
       <AppHeader />
-      <el-main>Main</el-main>
-      <el-footer>Footer</el-footer>
+      <el-main>
+        <RouterView />
+      </el-main>
     </el-container>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.common-layout {
+  background-color: rgb(243.9, 244.2, 244.8);
+}
+.header-and-main {
+  height: 100vh;
+  flex-direction: column;
+}
 </style>

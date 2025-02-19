@@ -2,25 +2,41 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import MainLayout from '@/components/layout2/MainLayout.vue'
 import indexView from '@/views/indexView.vue'
+import AppIndexView from '@/views/AppIndexView.vue'
 import { useTokenStore } from '@/stores/mytoken'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login/LoginView.vue'),
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('../views/register/RegisterView.vue'),
-    },
-    {
       path: '/',
       name: 'home',
       component: AppLayout,
+      children: [
+        {
+          path: '',
+          name: 'appindex',
+          component: AppIndexView,
+        },
+        {
+          path: '/login',
+          name: 'login',
+          component: () => import('../views/login/LoginView.vue'),
+        },
+        {
+          path: '/register',
+          name: 'register',
+          component: () => import('../views/register/RegisterView.vue'),
+        },
+        {
+          path: '/about',
+          name: 'about',
+          // route level code-splitting
+          // this generates a separate chunk (About.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import('../views/AboutView.vue'),
+        },
+      ],
     },
     {
       path: '/:xxx(.*)*',
@@ -39,14 +55,6 @@ const router = createRouter({
           component: indexView,
         },
       ],
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
     },
   ],
 })
