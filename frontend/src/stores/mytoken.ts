@@ -1,10 +1,11 @@
+// src/stores/mytokens.ts
 import { defineStore } from 'pinia'
 
 interface Token {
-  access_token: string
+  access_token: string // token
   token_type: string
-  refresh_token: string
-  expires_in: number
+  refresh_token: string // 刷新token
+  expires_in: number // 时间有效期
   user_id: string
 }
 

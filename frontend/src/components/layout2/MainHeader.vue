@@ -1,3 +1,4 @@
+<!-- src/components/layout2/AppHeader.vue -->
 <script lang="ts" setup>
 import { isCollapse } from './isCollapse';
 import { getInfo , logout } from '@/api/users';
@@ -7,7 +8,7 @@ const router = useRouter()
 
 const userInfo = ref({ portrait: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png', userName: "Chaos"})
 getInfo().then((res) => {
-  userInfo.value = res.data.content
+  userInfo.value = res.data.data
 })
 
 // 退出事件处理

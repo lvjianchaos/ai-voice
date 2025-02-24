@@ -1,3 +1,4 @@
+// src/api/users.ts
 import request from '@/utils/request'
 import { useTokenStore } from '@/stores/mytoken'
 // 用户登录-参数类型
@@ -10,12 +11,14 @@ type LoginInfo = {
 // 公共类型
 type CommonReturn<T = string> = {
   success: boolean
-  state: number
   message: string
-  content: T
+  data: T
 }
 // 用户登录-返回数据类型
-type LoginResult = CommonReturn
+type LoginResult = CommonReturn<{
+  token: string
+  userName: string
+}>
 
 // 用户登录请求 {name: 'Chaos', password: '123456'}
 /*

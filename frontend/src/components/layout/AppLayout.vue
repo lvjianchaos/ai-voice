@@ -1,3 +1,4 @@
+<!-- src/components/layout/AppHeader.vue -->
 <script lang="ts" setup>
 import AppHeader from './AppHeader.vue';
 </script>

@@ -1,3 +1,4 @@
+<!-- src/components/layout2/AppHeader.vue -->
 <script lang="ts" setup>
 import MainAside from './MainAside.vue';
 import MainHeader from './MainHeader.vue';

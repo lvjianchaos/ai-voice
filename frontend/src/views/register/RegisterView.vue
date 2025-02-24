@@ -1,4 +1,4 @@
-
+<!-- src/view/register/Register.vue -->
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
 import { register } from "@/api/users.ts";

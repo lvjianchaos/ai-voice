@@ -1,3 +1,4 @@
+<!-- src/components/layout2/MainAside.vue -->
 <script lang="ts" setup>
 import { isCollapse } from './isCollapse';
 </script>
@@ -34,7 +35,7 @@ import { isCollapse } from './isCollapse';
               <el-icon> <IEpVideoCameraFilled /> </el-icon> <span> 音视频处理 </span>
             </template>
             <el-menu-item index="/audio-subtitles">
-              <el-icon> <IEpPlatform /> </el-icon> <span> 声音置换与字幕添加 </span>
+              <el-icon> <IEpPlatform /> </el-icon> <span> 声音置换+字幕 </span>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>

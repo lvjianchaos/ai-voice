@@ -1,10 +1,11 @@
+// src/utils/request
 import axios, { type AxiosRequestHeaders } from 'axios'
 import { useTokenStore } from '@/stores/mytoken'
 import { refreshToken } from '@/api/users'
 import router from '@/router/index'
 const request = axios.create({
   // baseURL: import.meta.env.VITE_API_URL,
-  timeout: 5000,
+  timeout: 50000,
 })
 // 请求拦截器
 request.interceptors.request.use((config) => {

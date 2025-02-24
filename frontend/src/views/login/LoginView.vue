@@ -1,4 +1,4 @@
-
+<!-- src/views/login/LoginVoew.vue -->
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
 import { login } from "@/api/users.ts";
@@ -35,7 +35,9 @@ const onSubmit = async () => {
   console.log(data);
 
   // 保存token信息
-  store.saveToken(data.content);
+  // const token: string = "{\"access_token\":\"xxx\",\token_type\":\"bearer\",\refresh_token\":\"xxx\"}"
+
+  store.saveToken(data.data.token);
 
   isLoading.value = false;
 

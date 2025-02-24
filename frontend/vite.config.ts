@@ -17,10 +17,11 @@ import IconsResolver from 'unplugin-icons/resolver'
 export default defineConfig({
   server: {
     proxy: {
-      '/api': {
-        target: loadEnv('', process.cwd()).VITE_API_URL,
+      '/front': {
+        // /front/user/login => http://localhost:8080/front/user/login
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, ''),
+        // rewrite: (path) => path.replace(/^\/front/, ''),
       },
     },
   },

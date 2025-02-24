@@ -1,3 +1,4 @@
+// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import MainLayout from '@/components/layout2/MainLayout.vue'
@@ -53,6 +54,11 @@ const router = createRouter({
           path: '',
           name: 'index',
           component: indexView,
+        },
+        {
+          path: '/sample-library',
+          name: 'sample-library',
+          component: () => import('../views/sample/SampleIndex.vue'),
         },
       ],
     },
