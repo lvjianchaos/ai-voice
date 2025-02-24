@@ -22,3 +22,18 @@ export const getAll = () => {
     method: 'GET',
   })
 }
+
+export type CreateOrEditSound = {
+  id?: number
+  name: string
+  discription: string
+}
+
+// 更新样本信息
+export const update = (soundInfo: CreateOrEditSound) => {
+  return request({
+    url: '/front/sound/update',
+    method: 'POST',
+    data: soundInfo,
+  })
+}

@@ -26,7 +26,7 @@ import MainHeader from './MainHeader.vue';
   flex-direction: column;
 }
 .el-main {
-  padding-right: 0;
+  // padding-right: 0;
   background-color: rgb(243.9, 244.2, 244.8);
 }
 </style>
