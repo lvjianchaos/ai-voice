@@ -13,6 +13,8 @@ type Common<T> = {
 export type SoundItem = {
   id: number
   name: string
+  gender: string
+  language: string
   discription: string
 }
 // 获取所有声音样本
@@ -23,17 +25,28 @@ export const getAll = () => {
   })
 }
 
-export type CreateOrEditSound = {
+type SoundParams = {
   id?: number
   name: string
+  gender: string
+  language: string
   discription: string
 }
 
-// 更新样本信息
-export const update = (soundInfo: CreateOrEditSound) => {
-  return request({
-    url: '/front/sound/update',
+// 新建或更新样本
+export const saveOrUpdate = (SoundInfo: SoundParams) => {
+  return request<Common<boolean>>({
+    url: '/front/sound/saveOrUpdate',
     method: 'POST',
-    data: soundInfo,
+    data: SoundInfo,
+  })
+}
+
+// 删除声音样本
+export const deleteSample = (id: number) => {
+  return request<Common<boolean>>({
+    url: `/front/sound/${id}`,
+    method: 'DELETE',
+    data: { id },
   })
 }

@@ -60,16 +60,6 @@ const router = createRouter({
           name: 'sample-library',
           component: () => import('../views/sample/SampleIndex.vue'),
         },
-        {
-          path: '/sample-library/edit',
-          name: 'sample-edit',
-          component: () => import('../views/sample/SampleEdit.vue'),
-        },
-        {
-          path: '/sample-library/create',
-          name: 'sample-create',
-          component: () => import('../views/sample/SampleCreate.vue'),
-        },
       ],
     },
   ],
