@@ -24,8 +24,8 @@ const handleSelect = (key: string) => {
 <template>
   <el-header class="app-header">
     <a href="/" class="logo">
-      <img src="@/assets/logo.svg" alt="AI-Voice Logo" />
-      <h1>AI-Voice</h1>
+      <img src="@/assets/favicon.ico" alt="AI-Voice Logo" />
+      <h1>AI - Voice</h1>
     </a>
     <div class="header-actions">
       <el-button @click="navigateToAbout" class="about-button">关于</el-button>
@@ -59,9 +59,9 @@ const handleSelect = (key: string) => {
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
-    }
+      font-family: 'Lobster', cursive; /* 使用 Lobster 字体 */    }
   }
 
   .header-actions {

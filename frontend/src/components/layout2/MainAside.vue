@@ -8,8 +8,8 @@ import { isCollapse } from './isCollapse';
       <el-scrollbar>
         <el-menu router unique-opened :collapse="isCollapse">
           <a href="/main" class="logo">
-            <img src="@/assets/logo.svg" alt="logo" />
-            <h1>AI-Voice</h1>
+            <img src="@/assets/favicon.ico" alt="logo" />
+            <h1> AI-Voice</h1>
           </a>
           <el-sub-menu index="1">
             <template #title>
@@ -50,8 +50,14 @@ import { isCollapse } from './isCollapse';
     color: #303133;
     height: 60px;
     img {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
+    }
+    h1 {
+      padding-left: 5px;
+      font-family: 'Lobster', cursive; /* 使用 Lobster 字体 */
+      font-size: 24px;
+      font-weight: 600;
     }
   }
 

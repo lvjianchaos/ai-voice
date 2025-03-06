@@ -3,7 +3,14 @@
     <template #header>
       <div class="card-header">
         <span>声音置换 + 字幕</span>
-        <el-button type="primary" class="generate-button" @click="processAudioVideo">开始处理</el-button>
+        <el-button
+          type="primary"
+          class="generate-button"
+          @click="processAudioVideo"
+          :disabled="isProcessing"
+        >
+          {{ isProcessing ? '处理中...' : '开始处理' }}
+        </el-button>
       </div>
     </template>
 
@@ -32,9 +39,10 @@
 
       <!-- 声音选择 -->
       <el-form-item label="声音选择">
-        <el-select v-model="selectedVoice" placeholder="请选择声音">
-          <el-option v-for="item in voiceOptions" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-model="selectedVoice" placeholder="请选择声音" :disabled="isLoadingVoices">
+          <el-option v-for="item in voiceOptions" :key="item.id" :label="item.name" :value="item.name" />
         </el-select>
+        <div v-if="isLoadingVoices">加载声音样本中...</div>
       </el-form-item>
     </el-form>
 
@@ -48,15 +56,16 @@
       <template v-else>
         <audio controls :src="resultUrl"></audio>
       </template>
-      <el-button type="primary" @click="downloadResult">下载结果</el-button>
+      <el-button type="primary" @click="downloadResult" :disabled="!resultUrl">下载结果</el-button>
     </div>
   </el-card>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import { getAll } from '@/api/sound'; // 导入获取声音样本的 API
 
 // 响应式变量
 const selectedVoice = ref('');
@@ -64,13 +73,29 @@ const resultUrl = ref('');
 const fileList = ref([]);
 const audioVideoFile = ref<File | null>(null);
 const isVideo = ref(false); // 用于判断结果是视频还是音频
+const isProcessing = ref(false); // 是否正在处理
+const isLoadingVoices = ref(false); // 是否正在加载声音样本
 
 // 声音样本选项 (需要从后端获取)
-const voiceOptions = ref([
-  { value: 'voice1', label: '男声1' },
-  { value: 'voice2', label: '女声1' },
-  { value: 'voice3', label: '男声2' },
-]);
+const voiceOptions = ref([]);
+
+// 获取声音样本
+const getVoiceOptions = async () => {
+  isLoadingVoices.value = true;
+  try {
+    const response = await getAll();
+    if (response.data.success) {
+      voiceOptions.value = response.data.data;
+    } else {
+      ElMessage.error('获取声音样本失败');
+    }
+  } catch (error) {
+    console.error('获取声音样本失败:', error);
+    ElMessage.error('获取声音样本失败，请稍后再试');
+  } finally {
+    isLoadingVoices.value = false;
+  }
+};
 
 // 文件上传
 const beforeUpload = (file: File) => {
@@ -113,11 +138,12 @@ const processAudioVideo = async () => {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('file', audioVideoFile.value);
-  formData.append('voice', selectedVoice.value);
-
+  isProcessing.value = true; // 设置为正在处理
   try {
+    const formData = new FormData();
+    formData.append('file', audioVideoFile.value);
+    formData.append('voice', selectedVoice.value);
+
     const response = await axios.post(
       '/api/process-audio-video', // 替换为你的后端 API 地址
       formData,
@@ -139,6 +165,8 @@ const processAudioVideo = async () => {
   } catch (error) {
     console.error('处理失败:', error);
     ElMessage.error('处理失败，请稍后再试');
+  } finally {
+    isProcessing.value = false; // 恢复为未处理状态
   }
 };
 
@@ -153,6 +181,10 @@ const downloadResult = () => {
     document.body.removeChild(link);
   }
 };
+
+onMounted(() => {
+  getVoiceOptions(); // 在组件加载时获取声音样本
+});
 </script>
 
 <style lang="scss" scoped>

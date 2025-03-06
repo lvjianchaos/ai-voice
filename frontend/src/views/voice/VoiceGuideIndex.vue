@@ -3,7 +3,9 @@
     <template #header>
       <div class="card-header">
         <span>个性化语音讲解</span>
-        <el-button type="primary" class="generate-button" @click="generateVoice">生成语音</el-button>
+        <el-button type="primary" class="generate-button" @click="generateVoice" :disabled="isGenerating">
+          {{ isGenerating ? '生成中...' : '生成语音' }}
+        </el-button>
       </div>
     </template>
 
@@ -25,14 +27,15 @@
             <div class="el-upload__tip">只能上传txt/docx文件，且不超过2MB</div>
           </template>
         </el-upload>
-        <el-input v-model="textContent" type="textarea" :rows="10" placeholder="或在此输入文本内容" />
+        <el-input v-model="textContent" type="textarea" :rows="10" placeholder="或在此输入文本内容, 长度在800~2000字" />
       </el-form-item>
 
       <!-- 声音选择 -->
       <el-form-item label="声音选择">
-        <el-select v-model="selectedVoice" placeholder="请选择声音">
-          <el-option v-for="item in voiceOptions" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-model="selectedVoice" placeholder="请选择声音" :disabled="isLoadingVoices">
+          <el-option v-for="item in voiceOptions" :key="item.id" :label="item.name" :value="item.name" />
         </el-select>
+        <div v-if="isLoadingVoices">加载声音样本中...</div>
       </el-form-item>
 
       <!-- 语速、语气、节奏调节 -->
@@ -52,15 +55,16 @@
       <el-divider />
       <h3>语音生成结果</h3>
       <audio controls :src="audioUrl"></audio>
-      <el-button type="primary" @click="downloadAudio">下载音频</el-button>
+      <el-button type="primary" @click="downloadAudio" :disabled="!audioUrl">下载音频</el-button>
     </div>
   </el-card>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import { getAll } from '@/api/sound'; // 导入获取声音样本的 API
 
 // 响应式变量
 const textContent = ref('');
@@ -70,13 +74,29 @@ const tone = ref(0.5);
 const rhythm = ref(1);
 const audioUrl = ref('');
 const fileList = ref([]);
+const isGenerating = ref(false); // 是否正在生成语音
+const isLoadingVoices = ref(false); // 是否正在加载声音样本
 
-// 声音样本选项 (需要从后端获取)
-const voiceOptions = ref([
-  { value: 'voice1', label: '男声1' },
-  { value: 'voice2', label: '女声1' },
-  { value: 'voice3', label: '男声2' },
-]);
+// 声音样本选项 (从后端获取)
+const voiceOptions = ref([]);
+
+// 获取声音样本
+const getVoiceOptions = async () => {
+  isLoadingVoices.value = true;
+  try {
+    const response = await getAll();
+    if (response.data.success) {
+      voiceOptions.value = response.data.data;
+    } else {
+      ElMessage.error('获取声音样本失败');
+    }
+  } catch (error) {
+    console.error('获取声音样本失败:', error);
+    ElMessage.error('获取声音样本失败，请稍后再试');
+  } finally {
+    isLoadingVoices.value = false;
+  }
+};
 
 // 文件上传
 const uploadFile = async (uploadOption: any) => {
@@ -106,7 +126,7 @@ const handleRemove = (file: any, fileList: any) => {
 
 // 生成语音
 const generateVoice = async () => {
-  // 修改判断逻辑：如果文本内容为空，并且没有上传文件，则提示错误
+  // 修改判断逻辑：只要文本内容不为空，或者有上传文件，就可以生成语音
   if (!textContent.value && fileList.value.length === 0) {
     ElMessage.warning('请输入文本内容或上传文件');
     return;
@@ -116,9 +136,10 @@ const generateVoice = async () => {
     return;
   }
 
+  isGenerating.value = true; // 设置为正在生成
   try {
     const response = await axios.post(
-      '/api/generate-voice', // 替换为你的后端 API 地址
+      '/api/generate-voice', // 替换为后端 API 地址
       {
         text: textContent.value,
         voice: selectedVoice.value,
@@ -135,6 +156,8 @@ const generateVoice = async () => {
   } catch (error) {
     console.error('语音生成失败:', error);
     ElMessage.error('语音生成失败，请稍后再试');
+  } finally {
+    isGenerating.value = false; // 恢复为未生成状态
   }
 };
 
@@ -149,7 +172,55 @@ const downloadAudio = () => {
     document.body.removeChild(link);
   }
 };
+
+onMounted(() => {
+  getVoiceOptions(); // 在组件加载时获取声音样本
+});
 </script>
+
+
+
+<style lang="scss" scoped>
+.box-card {
+  width: 800px; /* 缩小卡片宽度 */
+  margin: 0 auto; /* 居中显示 */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-demo {
+  margin-bottom: 15px;
+}
+
+audio {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* 调整 slider 的宽度 */
+.el-slider {
+  width: 300px; /* 根据需要调整宽度 */
+}
+
+/* 醒目的生成语音按钮样式 */
+.generate-button {
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+</style>
+
 
 <style lang="scss" scoped>
 .box-card {

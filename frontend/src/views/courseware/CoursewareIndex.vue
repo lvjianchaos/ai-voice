@@ -3,7 +3,14 @@
     <template #header>
       <div class="card-header">
         <span>有声课件制作</span>
-        <el-button type="primary" class="generate-button" @click="generateCourseware">生成有声课件</el-button>
+        <el-button
+          type="primary"
+          class="generate-button"
+          @click="generateCourseware"
+          :disabled="isGenerating"
+        >
+          {{ isGenerating ? '生成中...' : '生成有声课件' }}
+        </el-button>
       </div>
     </template>
 
@@ -30,9 +37,10 @@
 
       <!-- 声音选择 -->
       <el-form-item label="声音选择">
-        <el-select v-model="selectedVoice" placeholder="请选择声音">
-          <el-option v-for="item in voiceOptions" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-model="selectedVoice" placeholder="请选择声音" :disabled="isLoadingVoices">
+          <el-option v-for="item in voiceOptions" :key="item.id" :label="item.name" :value="item.name" />
         </el-select>
+        <div v-if="isLoadingVoices">加载声音样本中...</div>
       </el-form-item>
 
       <!-- 语速、语气、节奏调节 -->
@@ -52,15 +60,16 @@
       <el-divider />
       <h3>有声课件生成结果</h3>
       <video controls :src="videoUrl" width="640" height="360"></video>
-      <el-button type="primary" @click="downloadVideo">下载视频</el-button>
+      <el-button type="primary" @click="downloadVideo" :disabled="!videoUrl">下载视频</el-button>
     </div>
   </el-card>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import { getAll } from '@/api/sound'; // 导入获取声音样本的 API
 
 // 响应式变量
 const selectedVoice = ref('');
@@ -70,21 +79,37 @@ const rhythm = ref(1);
 const videoUrl = ref('');
 const fileList = ref([]);
 const coursewareFile = ref<File | null>(null); // 用于存储上传的课件文件
+const isGenerating = ref(false); // 是否正在生成课件
+const isLoadingVoices = ref(false); // 是否正在加载声音样本
 
-// 声音样本选项 (需要从后端获取)
-const voiceOptions = ref([
-  { value: 'voice1', label: '男声1' },
-  { value: 'voice2', label: '女声1' },
-  { value: 'voice3', label: '男声2' },
-]);
+// 声音样本选项 (从后端获取)
+const voiceOptions = ref([]);
+
+// 获取声音样本
+const getVoiceOptions = async () => {
+  isLoadingVoices.value = true;
+  try {
+    const response = await getAll();
+    if (response.data.success) {
+      voiceOptions.value = response.data.data;
+    } else {
+      ElMessage.error('获取声音样本失败');
+    }
+  } catch (error) {
+    console.error('获取声音样本失败:', error);
+    ElMessage.error('获取声音样本失败，请稍后再试');
+  } finally {
+    isLoadingVoices.value = false;
+  }
+};
 
 // 课件上传
 const beforeUpload = (file: File) => {
-  const isPPT = file.name.endsWith('.ppt') || file.name.endsWith('.pptx');
+  const isPPT = file.name.endsWith('.ppt') || file.name.endsWith('.pptx') || file.name.endsWith('.pdf');
   const isLt20M = file.size / 1024 / 1024 > 3 && file.size / 1024 / 1024 < 20;
 
   if (!isPPT) {
-    ElMessage.error('仅支持PPT文件!');
+    ElMessage.error('仅支持PPT/PDF文件!');
     return false;
   }
   if (!isLt20M) {
@@ -114,14 +139,15 @@ const generateCourseware = async () => {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('courseware', coursewareFile.value);
-  formData.append('voice', selectedVoice.value);
-  formData.append('speed', speed.value.toString());
-  formData.append('tone', tone.value.toString());
-  formData.append('rhythm', rhythm.value.toString());
-
+  isGenerating.value = true; // 设置为正在生成
   try {
+    const formData = new FormData();
+    formData.append('courseware', coursewareFile.value);
+    formData.append('voice', selectedVoice.value);
+    formData.append('speed', speed.value.toString());
+    formData.append('tone', tone.value.toString());
+    formData.append('rhythm', rhythm.value.toString());
+
     const response = await axios.post(
       '/api/generate-courseware',
       formData,
@@ -139,6 +165,8 @@ const generateCourseware = async () => {
   } catch (error) {
     console.error('有声课件生成失败:', error);
     ElMessage.error('有声课件生成失败，请稍后再试');
+  } finally {
+    isGenerating.value = false; // 恢复为未生成状态
   }
 };
 
@@ -153,6 +181,10 @@ const downloadVideo = () => {
     document.body.removeChild(link);
   }
 };
+
+onMounted(() => {
+  getVoiceOptions(); // 在组件加载时获取声音样本
+});
 </script>
 
 <style lang="scss" scoped>
