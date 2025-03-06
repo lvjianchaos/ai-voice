@@ -1,13 +1,13 @@
-<!-- src/components/layout/AppHeader.vue -->
+<!-- src/components/layout/AppLayout.vue -->
 <script lang="ts" setup>
 import AppHeader from './AppHeader.vue';
 </script>
 
 <template>
-  <div class="common-layout">
-    <el-container class = "header-and-main">
+  <div class="app-layout">
+    <el-container class="layout-container">
       <AppHeader />
-      <el-main>
+      <el-main class="layout-main">
         <RouterView />
       </el-main>
     </el-container>
@@ -15,12 +15,20 @@ import AppHeader from './AppHeader.vue';
 </template>
 
 <style lang="scss" scoped>
-.common-layout {
-  background-color: rgb(232.8, 233.4, 234.6);
+.app-layout {
+  background: linear-gradient(135deg, #e0e5ec 0%, #ffffff 100%); /* 渐变背景 */
+  min-height: 100vh; /* 确保背景覆盖整个视口 */
+  overflow: hidden; /* 防止滚动条 */
 }
-.header-and-main {
+
+.layout-container {
   height: 100vh;
+  display: flex;
   flex-direction: column;
 }
 
+.layout-main {
+  padding: 20px;
+  overflow: auto; /* 内容超出时显示滚动条 */
+}
 </style>

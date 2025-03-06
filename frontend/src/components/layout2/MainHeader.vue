@@ -41,12 +41,9 @@ const handleLogout = async () => {
 
     <!--面包屑-->
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/main' }">homepage</el-breadcrumb-item>
-      <el-breadcrumb-item>
-        <a href="/main">promotion management</a>
+      <el-breadcrumb-item v-for="(item,index) in $route.matched" :key="index" :to="{ path: item.path }">{{
+        item.meta.title}}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-      <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--下拉菜单-->

@@ -7,7 +7,7 @@ import { isCollapse } from './isCollapse';
     <el-aside>
       <el-scrollbar>
         <el-menu router unique-opened :collapse="isCollapse">
-          <a href="/" class="logo">
+          <a href="/main" class="logo">
             <img src="@/assets/logo.svg" alt="logo" />
             <h1>AI-Voice</h1>
           </a>
@@ -20,9 +20,6 @@ import { isCollapse } from './isCollapse';
             </el-menu-item>
             <el-menu-item index="voice-guide">
               <el-icon> <IEpPhoneFilled /> </el-icon> <span> 个性语音讲解 </span>
-            </el-menu-item>
-            <el-menu-item index="/standard-output">
-              <el-icon> <IEpComment /> </el-icon> <span> 标准语言输出 </span>
             </el-menu-item>
           </el-sub-menu>
 

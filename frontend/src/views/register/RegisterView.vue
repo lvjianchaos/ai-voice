@@ -1,43 +1,49 @@
-<!-- src/view/register/Register.vue -->
+<!-- src/views/register/Register.vue -->
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
 import { register } from "@/api/users.ts";
 import { useRouter, useRoute } from 'vue-router';
+import { ref, reactive } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
+
 // 表单响应式数据
 const form = reactive({
   name: "Chaos",
   password: "123456",
   passwordConfirm: "123456",
 });
+
 // 注册事件处理
 const onSubmit = async () => {
   isLoading.value = true;
   // 表单校验
-  await formRef.value?.validate().catch((err)=>{
+  await formRef.value?.validate().catch((err) => {
     ElMessage.error("表单校验失败...");
     isLoading.value = false;
     throw err;
   });
 
   // 注册请求
-  const data = await register(form).then((res) => {
-    if(!res.data.success) {
+  try {
+    const data = await register(form);
+    if (!data.data.success) {
       ElMessage.error('注册失败！');
       isLoading.value = false;
       throw new Error("注册信息有误");
     }
-    return res.data;
-  });
-  console.log(data);
 
-  isLoading.value = false;
+    isLoading.value = false;
 
-  ElMessage.success('注册成功！');
-  router.push(route.query.redirect as string || '/login');
+    ElMessage.success('注册成功！');
+    router.push(route.query.redirect as string || '/login');
+  } catch (error) {
+    console.error("注册出错:", error);
+    isLoading.value = false;
+  }
 };
+
 // 定义表单校验规则
 const rules = reactive<FormRules>({
   name: [
@@ -62,7 +68,8 @@ const rules = reactive<FormRules>({
     {
       required: true,
       message: "密码不能为空",
-      trigger: "change" },
+      trigger: "change"
+    },
     {
       min: 6,
       max: 18,
@@ -71,7 +78,7 @@ const rules = reactive<FormRules>({
     },
   ],
   passwordConfirm: [
-  {
+    {
       required: true,
       message: "请确认密码",
       trigger: "change",
@@ -88,62 +95,119 @@ const rules = reactive<FormRules>({
     }
   ]
 });
+
 // 定义是否注册加载中
 const isLoading = ref(false);
 // 表单实例
 const formRef = ref<FormInstance>();
+// 密码可见性
+const passwordVisible = ref(false);
+
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
+
 </script>
 
 <template>
   <div class="register">
-    <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" label-position="top" size="large">
-      <h2>注册</h2>
+    <el-card class="register-card">
+      <template #header>
+        <div class="card-header">
+          <h2>注册</h2>
+        </div>
+      </template>
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" label-position="top" size="large">
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model="form.name" placeholder="请输入用户名" clearable />
+        </el-form-item>
 
-      <el-form-item label="用户名" prop="name">
-        <el-input v-model="form.name" />
-      </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            v-model="form.password"
+            :type="passwordVisible ? 'text' : 'password'"
+            placeholder="请输入密码"
+            clearable
+          >
+            <template #append>
+              <el-icon @click="togglePasswordVisibility" style="cursor: pointer">
+                <IEpView v-if="passwordVisible"/>
+                <IEpHide v-else />
+              </el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
 
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password"/>
-      </el-form-item>
+        <el-form-item label="确认密码" prop="passwordConfirm">
+          <el-input
+            v-model="form.passwordConfirm"
+            type="password"
+            placeholder="请确认密码"
+            clearable
+          >
+          </el-input>
+        </el-form-item>
 
-      <el-form-item label="确认密码" prop="passwordConfirm">
-        <el-input v-model="form.passwordConfirm" type="password" />
-      </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit" :loading="isLoading">注册</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit" :loading="isLoading" size="large" block>
+            注册
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
 <style scoped lang="scss">
 .register {
-  background-color: #ffffff;
-  border-radius: 20px;
-  height: 85vh;
+  background: linear-gradient(to bottom, #f0f2f5, #e0e5ec);
+  height: 100%;
   display: flex;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   align-items: center;
 
-  .el-form {
-    width:300px;
-    background-color: rgb(243.9, 244.2, 244.8);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  .register-card {
+    width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 
-    .el-form-item {
-      margin-top: 20px;
+    &:hover {
+      transform: translateY(-5px);
     }
 
-    .el-button {
-      width:100%;
-      margin-top:30px;
+    .card-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+
+      h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+
+    .el-form {
+      padding: 20px;
+
+      .el-form-item {
+        margin-bottom: 25px;
+
+        .el-input {
+          border-radius: 8px;
+          .el-icon {
+            font-size: 20px
+          }
+        }
+      }
+
+      .el-button {
+        border-radius: 8px;
+        width: 100%;
+      }
     }
   }
 }
 </style>
-
