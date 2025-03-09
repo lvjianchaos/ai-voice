@@ -13,6 +13,7 @@ export const getAllSound = async () => {
   try {
     const response = await getAll()
     if (response.data.success === true) {
+      console.log('ok')
       allSound.value = response.data.data
     } else {
       ElMessage.error('获取样本信息失败!')

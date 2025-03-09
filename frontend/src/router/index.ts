@@ -48,8 +48,8 @@ const router = createRouter({
       path: '/main',
       name: 'main',
       component: MainLayout,
-      // meta: { requireAuth: true, title: '主页' },
-      meta: { title: '主页' },
+      meta: { requireAuth: true, title: '主页' },
+      // meta: { title: '主页' },
       children: [
         {
           path: '',

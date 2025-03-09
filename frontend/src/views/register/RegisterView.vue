@@ -9,11 +9,7 @@ const router = useRouter();
 const route = useRoute();
 
 // 表单响应式数据
-const form = reactive({
-  name: "Chaos",
-  password: "123456",
-  passwordConfirm: "123456",
-});
+const form = reactive({});
 
 // 注册事件处理
 const onSubmit = async () => {
@@ -29,7 +25,7 @@ const onSubmit = async () => {
   try {
     const data = await register(form);
     if (!data.data.success) {
-      ElMessage.error('注册失败！');
+      ElMessage.error('用户名已被注册,注册失败！');
       isLoading.value = false;
       throw new Error("注册信息有误");
     }

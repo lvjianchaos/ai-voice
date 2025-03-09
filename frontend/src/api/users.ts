@@ -1,94 +1,93 @@
-// src/api/users.ts
-import request from '@/utils/request'
-import { useTokenStore } from '@/stores/mytoken'
-// 用户登录-参数类型
-type LoginInfo = {
-  name: string
-  code?: string
-  password: string
-}
+<!-- src/components/layout/AppHeader.vue -->
+<script lang="ts" setup>
+import { useRouter } from 'vue-router';
 
-// 公共类型
-type CommonReturn<T = string> = {
-  success: boolean
-  message: string
-  data: T
-}
-// 用户登录-返回数据类型
-type LoginResult = CommonReturn<{
-  token: string
-  userName: string
-}>
+const router = useRouter();
 
-// 用户登录请求 {name: 'Chaos', password: '123456'}
-/*
-  要求请求类型 application/json
-*/
-export const login = (loginInfo: LoginInfo) => {
-  return request<LoginResult>({
-    method: 'POST',
-    url: '/front/user/login',
-    data: loginInfo,
-  })
-}
+const navigateToAbout = () => {
+  router.push('/about');
+};
 
-// 获取用户信息
-type UserInfo = CommonReturn<{
-  isUpdatedPassword: boolean
-  portrait: string
-  userName: string
-}>
-export const getInfo = () => {
-  return request<UserInfo>({
-    method: 'GET',
-    url: '/front/user/getInfo',
-  })
-}
+const navigateToLogin = () => {
+  router.push('/login');
+};
 
-// 用户退出
-export const logout = () => {
-  return request({
-    method: 'POST',
-    url: '/front/user/logout',
-  })
-}
+const navigateToRegister = () => {
+  router.push('/register');
+};
 
-// 刷新token
-type RToken = CommonReturn
-let promiseRT: Promise<any>
-let isRefreshing = false
-export const refreshToken = () => {
-  if (isRefreshing) {
-    return promiseRT
+const handleSelect = (key: string) => {
+  console.log(`导航项被选中：${key}`);
+};
+</script>
+
+<template>
+  <el-header class="app-header">
+    <a href="/" class="logo">
+      <img src="@/assets/favicon.ico" alt="AI-Voice Logo" />
+      <h1>AI - Voice</h1>
+    </a>
+    <div class="header-actions">
+      <el-button @click="navigateToAbout" class="about-button">关于</el-button>
+      <el-button @click="navigateToLogin" class="login-button">登录</el-button>
+      <el-button type="primary" @click="navigateToRegister" class="register-button">注册</el-button>
+    </div>
+  </el-header>
+</template>
+
+<style lang="scss" scoped>
+.app-header {
+  background-color: #fff;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #eee;
+  z-index: 10;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+
+    img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      font-family: 'Lobster', cursive; /* 使用 Lobster 字体 */    }
   }
-  isRefreshing = true
-  promiseRT = request<RToken>({
-    method: 'POST',
-    url: '/front/user/refresh_token',
-    params: {
-      refreshtoken: useTokenStore().token?.refresh_token,
-    },
-  }).finally(() => {
-    isRefreshing = false
-  })
-  return promiseRT
-}
 
-// 用户注册
-type RegisterInfo = {
-  name: string
-  password: string
-  passwordConfirm: string
-  code?: string
-}
+  .header-actions {
+    display: flex;
+    align-items: center;
 
-type RegisterResult = CommonReturn
+    .el-button {
+      margin-left: 15px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease; /* 添加过渡效果 */
 
-// 用户注册请求
-export const register = (registerInfo: RegisterInfo) => {
-  return request<RegisterResult>({
-    method: 'POST',
-    url: '/front/user/register',
-    data: registerInfo,
-  })
+      &:hover {
+        transform: translateY(-2px); /* 悬停时向上移动 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 悬停时增加阴影 */
+      }
+    }
+
+    .register-button {
+      background-color: #409EFF;
+      color: #fff;
+
+      &:hover {
+        background-color: #66b1ff;
+      }
+    }
+  }
 }
+</style>

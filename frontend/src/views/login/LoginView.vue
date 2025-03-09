@@ -12,8 +12,6 @@ const route = useRoute();
 
 // 表单响应式数据
 const form = reactive({
-  name: "Chaos",
-  password: "123456",
 });
 
 // 登录事件处理
@@ -34,9 +32,8 @@ const onSubmit = async () => {
       isLoading.value = false;
       throw new Error("登录信息有误");
     }
-
     // 保存token信息
-    store.saveToken(data.data.data.token);
+    store.saveToken(data.data.data);
 
     isLoading.value = false;
 

@@ -19,73 +19,136 @@
       <el-form-item label="课件上传">
         <el-upload
           class="upload-demo"
-          action="#"
-          :http-request="uploadCourseware"
           :limit="1"
-          accept=".ppt,.pptx,.pdf"
+          accept=".ppt,.pptx"
           :auto-upload="false"
           :on-remove="handleRemove"
-          :file-list="fileList"
           :before-upload="beforeUpload"
+          :on-change="handleFileChange"
+          :file-list="fileList"
         >
+        <div class="upload-wrapper"> <!-- 包裹容器 -->
           <el-button type="primary">选择课件</el-button>
-          <template #tip>
-            <div class="el-upload__tip">只能上传PPT/PDF文件，且大小在3MB~20MB之间</div>
-          </template>
+          <div class="el-upload__tip" style="text-align: left; margin-top: 8px; margin-left: 0">
+            只能上传PPT文件，且大小在3MB~20MB之间
+          </div>
+      </div>
         </el-upload>
       </el-form-item>
 
       <!-- 声音选择 -->
       <el-form-item label="声音选择">
-        <el-select v-model="selectedVoice" placeholder="请选择声音" :disabled="isLoadingVoices">
-          <el-option v-for="item in voiceOptions" :key="item.id" :label="item.name" :value="item.name" />
+        <el-select
+          v-model="selectedVoiceId"
+          placeholder="请选择声音"
+          :disabled="isLoadingVoices"
+          clearable
+        >
+          <el-option
+            v-for="item in voiceOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
         </el-select>
-        <div v-if="isLoadingVoices">加载声音样本中...</div>
+        <div v-if="isLoadingVoices" class="loading-voices">加载声音样本中...</div>
       </el-form-item>
 
       <!-- 语速、语气、节奏调节 -->
       <el-form-item label="语速">
-        <el-slider v-model="speed" :min="0.5" :max="1.5" :step="0.1" show-tooltip />
+        <el-slider
+          v-model="speed"
+          :min="0.5"
+          :max="1.5"
+          :step="0.1"
+          :format-tooltip="formatSpeed"
+          show-tooltip
+        />
       </el-form-item>
       <el-form-item label="语气">
-        <el-slider v-model="tone" :min="0" :max="1" :step="0.1" show-tooltip />
+        <el-slider
+          v-model="tone"
+          :min="0"
+          :max="1"
+          :step="0.1"
+          :format-tooltip="formatTone"
+          show-tooltip
+        />
       </el-form-item>
       <el-form-item label="节奏">
-        <el-slider v-model="rhythm" :min="0.5" :max="1.5" :step="0.1" show-tooltip />
+        <el-slider
+          v-model="rhythm"
+          :min="0.5"
+          :max="1.5"
+          :step="0.1"
+          :format-tooltip="formatRhythm"
+          show-tooltip
+        />
       </el-form-item>
     </el-form>
 
     <!-- 有声课件生成结果展示 -->
-    <div v-if="videoUrl">
+    <div v-if="videoUrl" class="result-section">
       <el-divider />
       <h3>有声课件生成结果</h3>
-      <video controls :src="videoUrl" width="640" height="360"></video>
-      <el-button type="primary" @click="downloadVideo" :disabled="!videoUrl">下载视频</el-button>
+
+      <el-button
+        type="success"
+        @click="downloadVideo"
+        :disabled="!videoUrl"
+        class="download-btn"
+      >
+        下载视频
+      </el-button>
     </div>
   </el-card>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, type UploadFile } from 'element-plus';
 import axios from 'axios';
-import { getAll } from '@/api/sound'; // 导入获取声音样本的 API
+import { getAll } from '@/api/sound';
 
 // 响应式变量
-const selectedVoice = ref('');
+const selectedVoiceId = ref<string | null>(null); // Store the voice ID
 const speed = ref(1);
 const tone = ref(0.5);
 const rhythm = ref(1);
 const videoUrl = ref('');
-const fileList = ref([]);
-const coursewareFile = ref<File | null>(null); // 用于存储上传的课件文件
-const isGenerating = ref(false); // 是否正在生成课件
-const isLoadingVoices = ref(false); // 是否正在加载声音样本
+const coursewareFile = ref<File | null>(null);
+const fileList = ref<UploadFile[]>([]);
+const isGenerating = ref(false);
+const isLoadingVoices = ref(false);
+const voiceOptions = ref<{ id: string; name: string }[]>([]);
 
-// 声音样本选项 (从后端获取)
-const voiceOptions = ref([]);
+// 文件处理逻辑
+const handleFileChange = (file: UploadFile) => {
+  coursewareFile.value = file.raw as File;
+};
 
-// 获取声音样本
+const handleRemove = () => {
+  coursewareFile.value = null;
+  fileList.value = [];
+};
+
+const beforeUpload = (file: File) => {
+  const isPPT = ['.ppt', '.pptx'].some(ext => file.name.toLowerCase().endsWith(ext));
+  const fileSizeMB = file.size / 1024 / 1024;
+  const isSizeValid = fileSizeMB >= 3 && fileSizeMB <= 20;
+
+  if (!isPPT) {
+    ElMessage.error('仅支持PPT文件!');
+    return false;
+  }
+  if (!isSizeValid) {
+    ElMessage.error('文件大小必须在3MB~20MB之间!');
+    return false;
+  }
+  return true;
+};
+
+// 声音样本加载
 const getVoiceOptions = async () => {
   isLoadingVoices.value = true;
   try {
@@ -103,127 +166,170 @@ const getVoiceOptions = async () => {
   }
 };
 
-// 课件上传
-const beforeUpload = (file: File) => {
-  const isPPT = file.name.endsWith('.ppt') || file.name.endsWith('.pptx') || file.name.endsWith('.pdf');
-  const isLt20M = file.size / 1024 / 1024 > 3 && file.size / 1024 / 1024 < 20;
+// 生成课件逻辑
+const generateCourseware = async () => {
+  if (!validateForm()) return;
+  console.log(coursewareFile.value)
+  isGenerating.value = true;
+  try {
+    const formData = createFormData();
+    const response = await submitFormData(formData);
+    console.log(videoUrl.value)
+    console.log(response)
+    videoUrl.value = response.data.data;
 
-  if (!isPPT) {
-    ElMessage.error('仅支持PPT/PDF文件!');
+    ElMessage.success('有声课件生成成功！');
+  } catch (error) {
+    handleGenerationError(error);
+  } finally {
+    isGenerating.value = false;
+  }
+};
+
+const validateForm = (): boolean => {
+  if (!coursewareFile.value) {
+    ElMessage.warning('请上传课件');
     return false;
   }
-  if (!isLt20M) {
-    ElMessage.error('文件大小必须在3MB~20MB之间!');
+  if (!selectedVoiceId.value) {
+    ElMessage.warning('请选择声音');
     return false;
   }
   return true;
 };
 
-const uploadCourseware = async (uploadOption: any) => {
-  coursewareFile.value = uploadOption.file; // 保存上传的文件
+const createFormData = (): FormData => {
+  const formData = new FormData();
+  formData.append('courseware', coursewareFile.value!);
+  formData.append('voice', selectedVoiceId.value!); // Send the ID
+  formData.append('speed', speed.value.toString());
+  formData.append('tone', tone.value.toString());
+  formData.append('rhythm', rhythm.value.toString());
+  return formData;
 };
 
-const handleRemove = (file: any, fileList: any) => {
-  console.log(file, fileList);
-  coursewareFile.value = null; // 移除文件时清空
+const submitFormData = async (formData: FormData) => {
+  return await axios.post('/front/courseware/generate-courseware', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 };
 
-// 生成有声课件
-const generateCourseware = async () => {
-  if (!coursewareFile.value) {
-    ElMessage.warning('请上传课件');
-    return;
-  }
-  if (!selectedVoice.value) {
-    ElMessage.warning('请选择声音');
-    return;
-  }
-
-  isGenerating.value = true; // 设置为正在生成
-  try {
-    const formData = new FormData();
-    formData.append('courseware', coursewareFile.value);
-    formData.append('voice', selectedVoice.value);
-    formData.append('speed', speed.value.toString());
-    formData.append('tone', tone.value.toString());
-    formData.append('rhythm', rhythm.value.toString());
-
-    const response = await axios.post(
-      '/api/generate-courseware',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        responseType: 'blob', // 期望响应类型为 blob
-      }
-    );
-
-    // 创建一个指向 blob 数据的 URL
-    videoUrl.value = URL.createObjectURL(response.data);
-    ElMessage.success('有声课件生成成功！');
-  } catch (error) {
-    console.error('有声课件生成失败:', error);
-    ElMessage.error('有声课件生成失败，请稍后再试');
-  } finally {
-    isGenerating.value = false; // 恢复为未生成状态
-  }
+const handleGenerationError = (error: unknown) => {
+  console.error('生成失败:', error);
+  ElMessage.error('生成失败，请检查参数后重试');
 };
 
-// 下载视频
+// 下载处理
 const downloadVideo = () => {
   if (videoUrl.value) {
     const link = document.createElement('a');
     link.href = videoUrl.value;
-    link.download = 'courseware.mp4'; // 可以自定义文件名
+    link.download = `courseware-${Date.now()}.mp4`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 };
 
+// 辅助函数
+const formatSpeed = (val: number) => `${val}x 语速`;
+const formatTone = (val: number) => `${Math.round(val * 100)}% 情感强度`;
+const formatRhythm = (val: number) => `${val}x 节奏`;
+
 onMounted(() => {
-  getVoiceOptions(); // 在组件加载时获取声音样本
+  getVoiceOptions();
 });
 </script>
 
 <style lang="scss" scoped>
 .box-card {
-  width: 800px; /* 缩小卡片宽度 */
-  margin: 0 auto; /* 居中显示 */
+  max-width: 800px;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ebeef5;
+
+  span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #303133;
+  }
 }
 
 .upload-demo {
-  margin-bottom: 15px;
-}
 
-video {
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-/* 调整 slider 的宽度 */
-.el-slider {
-  width: 300px; /* 根据需要调整宽度 */
-}
-
-/* 醒目的生成语音按钮样式 */
-.generate-button {
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  :deep(.el-upload) {
+    width: 100%;
+    text-align: left;
   }
+
+  /* Reduce space between button and file list */
+  :deep(.el-upload-dragger) {
+    margin-bottom: 0;
+  }
+
+  :deep(.el-upload-list) {
+    margin-top: 8px; /* Adjust as needed */
+  }
+}
+
+.el-form-item {
+  margin-bottom: 22px;
+
+  :deep(.el-form-item__label) {
+    color: #606266;
+    font-weight: 500;
+  }
+}
+
+.el-slider {
+  width: 360px;
+}
+
+.loading-voices {
+  color: #909399;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.result-section {
+  margin-top: 24px;
+  text-align: center;
+
+  h3 {
+    color: #303133;
+    margin-bottom: 16px;
+  }
+
+  video {
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.download-btn {
+  margin-top: 16px;
+  width: 200px;
+}
+
+.generate-button {
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+.upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 </style>

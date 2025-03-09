@@ -14,7 +14,8 @@
         <el-input v-model="form.discription" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }" autocomplete="off" />
       </el-form-item>
 
-      <el-form-item label="音频文件" :label-width="formLabelWidth">
+      <!-- 音频文件上传/录制区域，仅在创建模式下显示 -->
+      <el-form-item v-if="isCreate" label="音频文件" :label-width="formLabelWidth">
         <input type="file" accept="audio/*" @change="handleFileChange" style="margin-bottom: 10px;" :disabled="hasAudioFile" />
         <el-button type="primary" @click="startRecording" :disabled="isRecording || hasAudioFile">
           开始录音
@@ -76,6 +77,7 @@ const initAndShow = async (id = 0) => {
   audioFileName.value = ''; // 重置音频文件名
 
   // 重置 form 对象
+  form.id = '';
   form.name = '';
   form.gender = '';
   form.language = '';
@@ -85,6 +87,7 @@ const initAndShow = async (id = 0) => {
   if (id) {
     isCreate.value = false;
     msgText.value = '编辑';
+    form.id = id;
     // 查找对应的 sound 对象
     const sound = allSound.value.find(item => item.id === id);
     if (sound) {
@@ -158,7 +161,7 @@ const handleDeleteAudio = () => {
 
 // 提交表单
 const submitForm = async () => {
-  if (!audioFile.value) {
+  if (!audioFile.value && isCreate.value) {
     ElMessage.error('请选择音频文件或录音');
     return;
   }

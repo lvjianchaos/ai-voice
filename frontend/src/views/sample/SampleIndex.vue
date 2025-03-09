@@ -15,11 +15,13 @@
       <el-table-column prop="gender" label="性别" align="center" width="80" />
       <el-table-column prop="language" label="语言" align="center" width="120" />
       <el-table-column prop="discription" label="样本描述" align="center" />
-      <el-table-column label="操作" align="center" width="250">
+      <el-table-column label="操作" align="center">
         <template #default="{ row }">
-          <el-button type="primary" size="small" @click="dlgCreateOrEdit?.initAndShow(row.id)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
-          <audio :src="row.audioUrl" controls></audio>
+          <el-button type="primary" size="default" @click="dlgCreateOrEdit?.initAndShow(row.id)">编辑</el-button>
+          <el-button type="danger" size="default" @click="handleDelete(row.id)">删除</el-button>
+          <div class="audio-container">
+            <audio :src="row.audioUrl" controls class="audio-player"></audio>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -111,5 +113,16 @@ onMounted(() => {
 
 .box-card {
   /*width: auto;*/
+}
+
+.audio-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.audio-player {
+  width: 80%;
+  max-width: 300px;
 }
 </style>
