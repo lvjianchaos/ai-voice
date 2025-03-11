@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+  ai:
+    dashscope:
+      api-key:
+
+knife4j:
+  enable: true
+  openapi:
+    title: AI-Voice
+    description: "接口文档"
+    version: v1.0.0
+    group:
+      default:
+        group-name: default
+        api-rule: package
+        api-rule-resources:
+          - com.example.controller
+
+ai:
+  alioss:
+    access-key-id:
+    access-key-secret:
+    bucket-name:
+    endpoint:
+    api-key:
+logging:
+  level:
+    com:
+      example:
+        mapper: debug
+        service: info
+        controller: info
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true

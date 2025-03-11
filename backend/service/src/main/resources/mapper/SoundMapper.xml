@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.SoundMapper">
+      <select id="pageQuery" resultType="com.example.entity.Sound">
+          select * from sound
+          <where>
+              <if test="name != null and name != ''">
+                  and name like concat('%',#{name},'%')
+              </if>
+
+          </where>
+          order by uploaded_at desc
+      </select>
+<insert id="upload">
+    insert into sound (name, file_url, language, gender, age_range, is_preset,model_id)
+    values (#{name},#{fileUrl},#{language},#{gender},#{ageRange},#{isPreset},#{modelId})
+
+</insert>
+<update id="update" >
+    update sound
+    <set>
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="fileUrl != null and fileUrl != ''">
+            file_url = #{fileUrl},
+        </if>
+        <if test="language != null and language != ''">
+            language = #{language},
+        </if>
+        <if test="gender != null and gender != ''">
+            gender = #{gender},
+        </if>
+        <if test="ageRange!= null and ageRange != ''">
+            age_range = #{ageRange},
+        </if>
+    </set>
+    where id = #{id}
+</update>
+</mapper>
