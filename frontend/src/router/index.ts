@@ -48,8 +48,8 @@ const router = createRouter({
       path: '/main',
       name: 'main',
       component: MainLayout,
-      meta: { requireAuth: true, title: '主页' },
-      // meta: { title: '主页' },
+      // meta: { requireAuth: true, title: '主页' },
+      meta: { title: '主页' },
       children: [
         {
           path: '',
@@ -82,11 +82,6 @@ const router = createRouter({
           meta: { title: '声音置换+字幕' },
         },
       ],
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/TestPage.vue'),
     },
   ],
 })

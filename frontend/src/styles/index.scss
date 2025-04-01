@@ -1,5 +1,11 @@
 // src/styles/index.scss
+
+// Reset styles
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
+
+// Import global styles
+@import '@/assets/styles.scss';

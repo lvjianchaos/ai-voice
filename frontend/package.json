@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/motion": "^3.0.3",
     "axios": "^1.7.9",
     "element-plus": "^2.9.3",
+    "gsap": "^3.12.7",
     "pinia": "^2.3.0",
     "sass": "^1.83.4",
     "st-common-ui-vue3": "^0.14.0",
