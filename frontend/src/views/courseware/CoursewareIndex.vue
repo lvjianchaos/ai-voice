@@ -65,7 +65,7 @@
                   type="danger"
                   size="small"
                   circle
-                  @click="handleFileRemove(fileList[0])"
+                  @click="handleFileRemove()"
                   class="remove-button"
                 >
                   <el-icon><Delete /></el-icon>
@@ -89,7 +89,6 @@
                 placeholder="请选择语音"
                 class="voice-select"
                 :loading="voiceLoading"
-                @change="handleVoiceChange"
         >
           <el-option
                   v-for="item in voices"
@@ -240,7 +239,7 @@ import { Upload, UploadFilled, InfoFilled, Document, Delete, Setting, VideoPlay,
 import { ElMessage, type UploadFile, type UploadUserFile } from 'element-plus';
 import axios from 'axios';
 import { getAll } from '@/api/sound';
-import { getVoices, VoiceItem } from '@/api/voice';
+import { getVoices, type VoiceItem } from '@/api/voice';
 
 // 响应式变量
 const selectedVoice = ref<number | string>('');

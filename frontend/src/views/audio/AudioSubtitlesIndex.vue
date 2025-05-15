@@ -69,7 +69,7 @@
                 type="danger"
                 size="small"
                 circle
-                @click="handleFileRemove(fileList[0])"
+                @click="handleFileRemove()"
                 class="remove-button"
               >
                 <el-icon><Delete /></el-icon>
@@ -153,7 +153,7 @@ import {
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import type { UploadFile, UploadUserFile } from 'element-plus';
-import { getVoices, VoiceItem } from '@/api/voice';
+import { getVoices, type VoiceItem } from '@/api/voice';
 
 // 文件上传相关变量
 const fileList = ref<UploadUserFile[]>([]);

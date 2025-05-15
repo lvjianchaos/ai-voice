@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/composables/useSounds.ts
 
 import { ref, reactive } from 'vue'

@@ -30,7 +30,7 @@ export const login = (loginInfo: LoginInfo) => {
 }
 
 // 获取用户信息
-type UserInfo = CommonReturn<{
+export type UserInfo = CommonReturn<{
   isUpdatedPassword: boolean
   portrait: string
   userName: string

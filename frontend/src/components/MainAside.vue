@@ -2,9 +2,19 @@
 import router from '@/router';
 import { useTokenStore } from '@/stores/mytoken';
 import { computed, onMounted } from 'vue';
+import { getInfo } from '@/api/users';
 
 const tokenStore = useTokenStore();
-const userInfo = computed(() => tokenStore.getUser);
+
+const userInfo = ref({
+  name: '',
+  avatar: '',
+})
+
+await getInfo().then((res) => {
+  userInfo.value.avatar = res.data.data.portrait
+  userInfo.value.name = res.data.data.userName;
+});
 
 // 当前活动路由
 const activeRoute = computed(() => {

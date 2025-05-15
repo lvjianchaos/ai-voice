@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <!-- src/App.vue -->
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, provide, ref } from 'vue';
@@ -18,7 +19,7 @@ provide('pageTransition', {
 });
 
 // 监听路由变化添加过渡动画
-const handleRouteChange = (to, from) => {
+const handleRouteChange = (to: any, from: { name: any; }) => {
   // 如果是首次加载，不添加动画
   if (!from.name) return;
 
@@ -108,7 +109,7 @@ const createMouseFollower = () => {
   follower.appendChild(followerGlow);
 
   // 鼠标移动事件
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: { clientX: any; clientY: any; }) => {
     // 更新全局鼠标位置
     cursorPosition.value = { x: e.clientX, y: e.clientY };
 
@@ -215,7 +216,8 @@ const addParallaxEffect = () => {
     const scrollTop = window.pageYOffset;
 
     parallaxElements.forEach((el) => {
-      const speed = el.getAttribute('data-parallax-speed') || 0.5;
+      const attrValue = el.getAttribute('data-parallax-speed');
+      const speed: number = parseFloat(attrValue ?? '0.5') || 0.5;
       const offset = scrollTop * speed;
       (el as HTMLElement).style.transform = `translateY(${offset}px)`;
     });
@@ -242,8 +244,8 @@ const addPageEntranceAnimation = () => {
   }, 300);
 };
 
-let cleanupMouseFollower = null;
-let cleanupParallax = null;
+let cleanupMouseFollower: (() => void) | null = null;
+let cleanupParallax: (() => void) | null = null;
 
 onMounted(() => {
   // 添加路由监听

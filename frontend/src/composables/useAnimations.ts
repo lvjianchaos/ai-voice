@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
 /**
  * 动画效果组合式API

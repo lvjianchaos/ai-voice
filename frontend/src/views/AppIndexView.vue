@@ -25,7 +25,7 @@ const mousePosX = ref(0)
 const mousePosY = ref(0)
 
 // Handles mouse movement for interactive effects
-const handleMouseMove = (event) => {
+const handleMouseMove = (event: { clientX: number; clientY: number }) => {
   mousePosX.value = event.clientX / window.innerWidth
   mousePosY.value = event.clientY / window.innerHeight
 }

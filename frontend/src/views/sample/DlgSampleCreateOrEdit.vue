@@ -181,7 +181,7 @@ const initAndShow = async (id = 0) => {
   isSubmitting.value = false;
 
   // 重置 form 对象
-  form.id = '';
+  form.id = 0;
   form.name = '';
   form.gender = '';
   form.language = '';

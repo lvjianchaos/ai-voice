@@ -194,7 +194,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { Document, Setting, VideoPlay, Download } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
-import { getVoices, generateVoice as apiGenerateVoice, VoiceItem } from '@/api/voice';
+import { getVoices, generateVoice as apiGenerateVoice, type VoiceItem } from '@/api/voice';
 
 // 响应式变量
 const content = ref('');
